@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build project
+        run: |
+          cargo build
+
+      - name: lint check
+        run: |
+          cargo clippy
+
+      - name: format check
+        run: |
+          cargo fmt --check
