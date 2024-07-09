@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+  theme    = "forest"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  user_name    String        @unique
+  display_name String        @db.VarChar(255)
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  channel      Channel[]
+  message      Message[]
+  channel_user ChannelUser[]
+  UserRole     UserRole[]
+}
+
+model Channel {
+  id              String        @id @default(uuid())
+  channel_name    String        @unique @db.VarChar(255)
+  description     String?       @db.VarChar(255)
+  created_user    User          @relation(fields: [created_user_id], references: [id])
+  is_private      Boolean
+  created_user_id String
+  created_at      DateTime      @default(now())
+  updated_at      DateTime?     @updatedAt
+  archive_at      DateTime?
+  deleted_at      DateTime?
+  message         Message[]
+  channel_user    ChannelUser[]
+}
+
+model Message {
+  id         String    @id @default(uuid())
+  user       User      @relation(fields: [user_id], references: [id])
+  user_id    String
+  channel    Channel   @relation(fields: [channel_id], references: [id])
+  channel_id String
+  content    String
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+  deleted_at DateTime?
+}
+
+model ChannelUser {
+  user       User     @relation(fields: [user_id], references: [id])
+  channel    Channel  @relation(fields: [channel_id], references: [id])
+  joined_at  DateTime
+  user_id    String
+  channel_id String
+
+  @@id([user_id, channel_id])
+}
+
+model Role {
+  id        String     @id @default(uuid())
+  role_name String     @db.VarChar(255)
+  UserRole  UserRole[]
+}
+
+model UserRole {
+  user    User   @relation(fields: [user_id], references: [id])
+  role    Role   @relation(fields: [role_id], references: [id])
+  user_id String
+  role_id String
+
+  @@id([user_id, role_id])
+}
