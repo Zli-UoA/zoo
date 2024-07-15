@@ -1,14 +1,8 @@
-use async_graphql::{InputObject, SimpleObject};
+use async_graphql::SimpleObject;
 
 #[derive(SimpleObject, Debug)]
 pub struct TestObj {
     pub id: String,
-    pub name: String,
-    pub num: usize,
-}
-
-#[derive(InputObject)]
-pub struct CreateTestObjInput {
     pub name: String,
     pub num: usize,
 }
