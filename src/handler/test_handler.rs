@@ -1,3 +1,4 @@
+use crate::context::Context;
 use crate::models::test::TestObj;
 use crate::usecase;
 use async_graphql::{InputObject, MergedObject, Object, SimpleObject};
@@ -7,8 +8,9 @@ pub struct TestQuery;
 
 #[Object]
 impl TestQuery {
-    async fn obj(&self) -> TestObj {
-        usecase::test::get_obj()
+    async fn obj<'ctx>(&self, ctx: &async_graphql::Context<'ctx>) -> TestObj {
+        let ctx = ctx.data_unchecked::<Context>();
+        usecase::test::get_obj(ctx)
     }
 }
 
@@ -20,7 +22,9 @@ pub struct CreateTestObjMutation;
 
 #[derive(InputObject)]
 pub struct CreateTestObjInput {
+    #[graphql(validator(max_length = 255))]
     pub name: String,
+    #[graphql(validator(minimum = 1))]
     pub num: usize,
 }
 

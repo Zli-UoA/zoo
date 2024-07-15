@@ -1,9 +1,10 @@
+use crate::context::Context;
 use crate::models::test::TestObj;
 
-pub fn get_obj() -> TestObj {
+pub fn get_obj(ctx: &Context) -> TestObj {
     TestObj {
-        id: "test".to_string(),
-        name: "test_name".to_string(),
+        id: ctx.db.clone(),
+        name: ctx.env.clone(),
         num: 1,
     }
 }
