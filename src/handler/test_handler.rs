@@ -33,16 +33,16 @@ pub struct CreateTestObjPayload {
 impl CreateTestObjMutation {
     async fn create_obj(
         &self,
-        input: CreateTestObjInput
+        input: CreateTestObjInput,
     ) -> Result<CreateTestObjPayload, async_graphql::Error> {
         let Ok(obj) = usecase::test::create_obj(input.name, input.num) else {
             return Err(async_graphql::Error {
                 message: "yuorei".to_string(),
                 source: None,
-                extensions: None
-            })
+                extensions: None,
+            });
         };
 
-        Ok(CreateTestObjPayload{ obj })
+        Ok(CreateTestObjPayload { obj })
     }
 }
