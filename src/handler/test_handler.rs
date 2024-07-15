@@ -1,6 +1,6 @@
 use crate::models::test::TestObj;
 use crate::usecase;
-use async_graphql::{Error, InputObject, MergedObject, Object, SimpleObject};
+use async_graphql::{InputObject, MergedObject, Object, SimpleObject};
 
 #[derive(Default)]
 pub struct TestQuery;
@@ -31,8 +31,18 @@ pub struct CreateTestObjPayload {
 
 #[Object]
 impl CreateTestObjMutation {
-    async fn create_obj(&self, input: CreateTestObjInput) -> Result<CreateTestObjPayload, Error> {
-        let obj = usecase::test::create_obj(input.name, input.num)?;
-        Ok(CreateTestObjPayload { obj })
+    async fn create_obj(
+        &self,
+        input: CreateTestObjInput
+    ) -> Result<CreateTestObjPayload, async_graphql::Error> {
+        let Ok(obj) = usecase::test::create_obj(input.name, input.num) else {
+            return Err(async_graphql::Error {
+                message: "yuorei".to_string(),
+                source: None,
+                extensions: None
+            })
+        };
+
+        Ok(CreateTestObjPayload{ obj })
     }
 }
