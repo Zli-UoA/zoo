@@ -1,4 +1,4 @@
-use zoo_backend::server::server;
+use server::server;
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {

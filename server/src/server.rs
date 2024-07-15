@@ -8,7 +8,7 @@ use axum::{
 use tokio::net::TcpListener;
 
 use super::schema::create_schema;
-use crate::context::Context;
+use context::Context;
 
 async fn graphiql() -> impl IntoResponse {
     response::Html(GraphiQLSource::build().endpoint("/").finish())

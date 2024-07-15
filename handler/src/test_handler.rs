@@ -1,7 +1,6 @@
-use crate::context::Context;
-use crate::models::test::TestObj;
-use crate::usecase;
 use async_graphql::{InputObject, MergedObject, Object, SimpleObject};
+use context::Context;
+use models::test::TestObj;
 
 #[derive(Default)]
 pub struct TestQuery;

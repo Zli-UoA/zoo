@@ -1,5 +1,5 @@
-use crate::context::Context;
-use crate::models::test::TestObj;
+use context::Context;
+use models::test::TestObj;
 
 pub fn get_obj(ctx: &Context) -> TestObj {
     TestObj {

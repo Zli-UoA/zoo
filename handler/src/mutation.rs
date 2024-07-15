@@ -1,4 +1,4 @@
-use crate::handler::test_handler::TestMutation;
+use crate::test_handler::TestMutation;
 use async_graphql::MergedObject;
 
 #[derive(MergedObject, Default)]

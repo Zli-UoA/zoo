@@ -3,9 +3,12 @@ name = "zoo_backend"
 version = "0.1.0"
 edition = "2021"
 
+[workspace]
+members = ["models", "handler", "server", "usecase", "context"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+server = { path = "./server" }
 async-graphql = "7.0.7"
 async-graphql-axum = "7.0.7"
 axum = { version = "0.7.5" }

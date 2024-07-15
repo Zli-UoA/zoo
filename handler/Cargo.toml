@@ -1,0 +1,10 @@
+[package]
+name = "handler"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+context = { path = "../context" }
+models = { path = "../models" }
+usecase = { path = "../usecase" }
+async-graphql = "7.0.7"

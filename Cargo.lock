@@ -301,6 +301,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "context"
+version = "0.1.0"
+
+[[package]]
 name = "cpufeatures"
 version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -528,6 +532,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "handler"
+version = "0.1.0"
+dependencies = [
+ "async-graphql",
+ "context",
+ "models",
+ "usecase",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.14.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -728,6 +742,13 @@ dependencies = [
  "libc",
  "wasi",
  "windows-sys 0.48.0",
+]
+
+[[package]]
+name = "models"
+version = "0.1.0"
+dependencies = [
+ "async-graphql",
 ]
 
 [[package]]
@@ -1076,6 +1097,18 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
+]
+
+[[package]]
+name = "server"
+version = "0.1.0"
+dependencies = [
+ "async-graphql",
+ "async-graphql-axum",
+ "axum",
+ "context",
+ "handler",
+ "tokio",
 ]
 
 [[package]]
@@ -1440,6 +1473,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "usecase"
+version = "0.1.0"
+dependencies = [
+ "context",
+ "models",
+]
+
+[[package]]
 name = "utf-8"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1613,5 +1654,6 @@ dependencies = [
  "async-graphql-axum",
  "async-trait",
  "axum",
+ "server",
  "tokio",
 ]
