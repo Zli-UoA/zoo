@@ -1,2 +1,2 @@
-pub mod schema;
+mod schema;
 pub mod server;
