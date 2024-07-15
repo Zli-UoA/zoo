@@ -18,9 +18,11 @@ jobs:
         id: build-docker
         run: |
           TAG_NAME=zoo-backend:$(git rev-parse --short HEAD)
+          FILE_NAME=zoo-backend_$(git rev-parse --short HEAD)
           docker build -f infra/Dockerfile-deploy -t ${TAG_NAME} .
-          docker save --output ${TAG_NAME}.tar ${TAG_NAME}
+          docker save --output ${FILE_NAME}.tar ${TAG_NAME}
           echo "::set-output name=TAG_NAME::${TAG_NAME}"
+          echo "::set-output name=TAG_NAME::${FILE_NAME}"
 
       - name: Install cloudflared
         run: |
@@ -45,6 +47,6 @@ jobs:
 
       - name: Upload binary
         run: |
-          rsync -vhz ${{ steps.build-docker.outputs.TAG_NAME }} server:~/
-          ssh server 'docker load --input ${{ steps.build-docker.outputs.TAG_NAME }}.tar && rm ${{ steps.build-docker.outputs.TAG_NAME }}.tar && docker stop $(docker ps -q) && docker run -d --restart always -p 8000:8000 ${{ steps.build-docker.outputs.TAG_NAME }}'
+          rsync -vhz ${{ steps.build-docker.outputs.FILE_NAME }}.tar server:~/
+          ssh server 'docker load --input ${{ steps.build-docker.outputs.FILE_NAME }}.tar && rm ${{ steps.build-docker.outputs.FILE_NAME }}.tar && docker stop $(docker ps -q) && docker run -d --restart always -p 8000:8000 ${{ steps.build-docker.outputs.TAG_NAME }}'
           
