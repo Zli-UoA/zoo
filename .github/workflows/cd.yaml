@@ -57,7 +57,7 @@ jobs:
               HostName ${{ secrets.HOST_NAME }}
               User ${{ secrets.USER_NAME }}
               IdentityFile ~/.ssh/id_ed25519
-              ProxyCommand /tmp/cloudflared/cloudflared access ssh --id ${{ secrets.SSH_CLOUDFLARED_ID }} --secret ${{ secrets.SSH_CLOUDFLARED_SECRET }} --hostname %h
+              ProxyCommand /tmp/cloudflared/cloudflared access ssh --id ${{ secrets.SSH_CLOUDFLARED_ID }} --secret ${{ secrets.SSH_CLOUDFLARED_SECRET }} --hostname ${{ secrets.HOST_NAME }}
 
       - name: Upload binary
         run: |
