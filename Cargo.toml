@@ -9,8 +9,12 @@ members = ["models", "handler", "server", "usecase", "context"]
 
 [dependencies]
 server = { path = "./server" }
+tokio = { workspace = true }
+async-trait = "0.1.81"
+
+
+[workspace.dependencies]
 async-graphql = "7.0.7"
 async-graphql-axum = "7.0.7"
-axum = { version = "0.7.5" }
 tokio = { version = "1.38.0", features = ["full"] }
-async-trait = "0.1.81"
+axum = { version = "0.7.5" }

@@ -7,4 +7,4 @@ edition = "2021"
 context = { path = "../context" }
 models = { path = "../models" }
 usecase = { path = "../usecase" }
-async-graphql = "7.0.7"
+async-graphql = { workspace = true }
