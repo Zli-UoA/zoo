@@ -22,12 +22,7 @@ jobs:
           images: |
             zoo-backend
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
             type=sha
-            type=schedule,pattern={{date 'YYYYMMDD-hhmmss' tz='Asia/Tokyo'}}
 
       - name: Build and push
         id: docker-image
@@ -62,5 +57,6 @@ jobs:
       - name: Upload binary
         run: |
           rsync -vhz /tmp/${{ github.sha }}.tar server:~/
+          
           ssh server 'docker load --input ${{ github.sha }}.tar && rm ${{ github.sha }}.tar && docker stop $(docker ps -q) && docker run -d --restart always -p 8000:8000 ${{ steps.docker-meta.outputs.tags }}'
           
