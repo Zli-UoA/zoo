@@ -18,9 +18,9 @@ pub async fn run_server() -> Result<(), std::io::Error> {
     let schema = create_schema().data(Context::new()).finish();
     let app = Router::new().route("/", get(graphiql).post_service(GraphQL::new(schema)));
 
-    println!("GraphiQL IDE: http://localhost:8000");
+    axum::serve(TcpListener::bind("0.0.0.0:8000").await.unwrap(), app).await?;
 
-    axum::serve(TcpListener::bind("127.0.0.1:8000").await.unwrap(), app).await?;
+    println!("GraphiQL IDE: http://localhost:8000");
 
     Ok(())
 }
