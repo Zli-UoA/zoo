@@ -1,0 +1,61 @@
+name: CD
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up buildx for docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker meta
+        id: docker-meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            zoo-backend
+          tags: |
+            type=sha
+
+      - name: Build and push
+        id: docker-image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/Dockerfile-deploy
+          outputs: type=docker,dest=/tmp/${{ github.sha }}.tar
+          tags: ${{ steps.docker-meta.outputs.tags }}
+
+      - name: Install cloudflared
+        run: |
+          lastest_version=$(curl -s $GITHUB_API_URL/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name')
+          mkdir -p /tmp/cloudflared
+          curl -sL -o /tmp/cloudflared/cloudflared $GITHUB_SERVER_URL/cloudflare/cloudflared/releases/download/$lastest_version/cloudflared-linux-amd64
+          chmod +x /tmp/cloudflared/cloudflared
+          /tmp/cloudflared/cloudflared --version
+
+      - name: Setup SSH
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          name: id_ed25519
+          config: |
+            Host server
+              HostName ${{ secrets.HOST_NAME }}
+              User ${{ secrets.USER_NAME }}
+              IdentityFile ~/.ssh/id_ed25519
+              ProxyCommand /tmp/cloudflared/cloudflared access ssh --id ${{ secrets.SSH_CLOUDFLARED_ID }} --secret ${{ secrets.SSH_CLOUDFLARED_SECRET }} --hostname ${{ secrets.HOST_NAME }}
+
+      - name: Upload binary
+        run: |
+          rsync -vhz /tmp/${{ github.sha }}.tar server:~/
+          
+          ssh server 'docker load --input ${{ github.sha }}.tar && rm ${{ github.sha }}.tar && docker stop $(docker ps -q) && docker run -d --restart always -p 8000:8000 ${{ steps.docker-meta.outputs.tags }}'
+          
