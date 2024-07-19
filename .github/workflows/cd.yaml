@@ -57,5 +57,5 @@ jobs:
         run: |
           rsync -vhz /tmp/${{ github.sha }}.tar server:~/
           
-          ssh server 'docker load --input ${{ github.sha }}.tar && rm ${{ github.sha }}.tar && docker stop $(docker ps -q) && docker run -d --restart always -p 8000:8000 ${{ steps.docker-meta.outputs.tags }}'
+          ssh server 'docker load --input ${{ github.sha }}.tar && rm ${{ github.sha }}.tar && docker update --restart=no $(docker ps -q) && docker stop $(docker ps -q) && docker run -d --restart always -p 8000:8000 ${{ steps.docker-meta.outputs.tags }}'
           
