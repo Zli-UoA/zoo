@@ -2,7 +2,9 @@ include .env
 export $(shell sed 's/=.*//' .env)
 
 migrate:
-	./migrate.sh
+	set -a && source .env && set +a && \
+	npm i -D prisma-erd-generator @mermaid-js/mermaid-cli && \
+	npx prisma migrate dev --name init
 
 generate-entities:
 	sea-orm-cli generate entity \
