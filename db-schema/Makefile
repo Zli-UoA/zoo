@@ -3,7 +3,7 @@ export $(shell sed 's/=.*//' .env)
 
 migrate:
 	set -a && source .env && set +a && \
-	npm i -D prisma-erd-generator @mermaid-js/mermaid-cli && \
+	npm i && \
 	npx prisma migrate dev --name init
 
 generate-entities:
