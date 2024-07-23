@@ -20,6 +20,8 @@ jobs:
 
       - name: Restore Cache
         uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: backend
 
       - name: Build project
         run: |
