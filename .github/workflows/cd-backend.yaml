@@ -30,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: infra/Dockerfile-deploy
+          file: infra/Dockerfile-backend-deploy
           outputs: type=docker,dest=/tmp/${{ github.sha }}.tar
           tags: ${{ steps.docker-meta.outputs.tags }}
 
