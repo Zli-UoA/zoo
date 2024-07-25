@@ -3,8 +3,7 @@ export $(shell sed 's/=.*//' .env)
 
 migrate:
 	set -a && source .env && set +a && \
-	npm i && \
-	npx prisma migrate dev --name init
+	npx prisma migrate deploy
 
 generate-entities:
 	sea-orm-cli generate entity \
