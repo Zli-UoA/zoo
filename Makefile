@@ -1,7 +1,7 @@
-.PHONY: migrate generate-entity
+.PHONY: migrate generate-entities
 
 migrate:
 	$(MAKE) -C backend migrate
 
-generate-entity:
-	$(MAKE) -C backend generate-entity
+generate-entities:
+	$(MAKE) -C backend generate-entities
