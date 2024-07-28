@@ -1,7 +1,8 @@
 {
   "devDependencies": {
-    "@mermaid-js/mermaid-cli": "^9.1.7",
-    "prisma-erd-generator": "^1.2.5"
+    "@mermaid-js/mermaid-cli": "^9.4.0",
+    "prisma": "^5.17.0",
+    "prisma-erd-generator": "^1.11.2"
   },
   "name": "zoo_backend",
   "version": "1.0.0",
@@ -12,5 +13,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^5.17.0"
+  }
 }
