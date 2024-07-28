@@ -56,8 +56,7 @@ npm install
 ### ORMのコード生成
 
 ```sh
-# backendの中で
-sea-orm-cli generate entity --output-dir ./src/generated
+make generate-entities
 ```
 
 ### ローカル開発環境のDBのセッティング
@@ -77,5 +76,5 @@ DBスキーマを編集した場合
 # DBのコンテナ起動
 docker compose up -d
 # スキーマのマイグレーション
-npx prisma migrate dev
+make migrate
 ```
