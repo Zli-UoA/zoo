@@ -5,10 +5,11 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "tsc -b && vite build",
+		"build": "graphql-codegen && tsc -b && vite build",
 		"check": "biome check",
 		"format": "biome check --write",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"codegen": "graphql-codegen"
 	},
 	"dependencies": {
 		"@apollo/client": "^3.11.4",
