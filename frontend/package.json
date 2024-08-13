@@ -4,7 +4,7 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
+		"dev": "vite & graphql-codegen --watch",
 		"build": "graphql-codegen && tsc -b && vite build",
 		"check": "biome check",
 		"format": "biome check --write",
@@ -20,6 +20,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.8.3",
 		"@graphql-codegen/cli": "^5.0.2",
+		"@parcel/watcher": "^2.4.1",
 		"@tanstack/router-devtools": "^1.45.6",
 		"@tanstack/router-plugin": "^1.45.3",
 		"@types/react": "^18.3.3",
