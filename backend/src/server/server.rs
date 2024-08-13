@@ -18,10 +18,14 @@ async fn graphiql() -> impl IntoResponse {
 }
 
 pub async fn run_server() -> Result<(), std::io::Error> {
+    #[allow(clippy::option_env_unwrap)]
+    let database_url = option_env!("DATABASE_URL")
+        .expect("Cannot find enviroment variable 'DATABASE_URL' at compile time.");
+
     let schema = create_schema()
         .data(Context {
             env: "harukun".to_string(),
-            db: connect_db("hoge").await.expect("Cannot connect DB"),
+            db: connect_db(database_url).await.expect("Cannot connect DB"),
         })
         .finish();
 
