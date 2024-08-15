@@ -3,12 +3,15 @@ use async_graphql::SimpleObject;
 #[derive(SimpleObject, Debug, PartialEq, Eq)]
 pub struct Channel {
     pub id: String,
-    pub channel_name: String,
+    pub name: String,
+    // Animal型を実装したら書き換える
+    pub owner: String,
     pub description: Option<String>,
-    pub is_private: bool,
-    pub created_user_id: String,
     pub created_at: String,
-    pub updated_at: Option<String>,
-    pub archive_at: Option<String>,
-    pub deleted_at: Option<String>,
+    pub archived: bool,
+    pub private: bool,
+    // Animal型を実装したら書き換える
+    pub animals: Vec<String>,
+    // message型を実装したら書き換える
+    pub messages: Vec<String>,
 }

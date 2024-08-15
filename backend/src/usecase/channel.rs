@@ -18,7 +18,7 @@ mod test {
     #[test]
     fn すべてのチャンネルを取得する() {
         // Arrange
-        let db: &DatabaseConnection = &MockDatabase::new(sea_orm::DatabaseBackend::Postgres)
+        let db: DatabaseConnection = MockDatabase::new(sea_orm::DatabaseBackend::Postgres)
             .append_query_results([vec![channel::Model {
                 id: "0".to_string(),
                 channel_name: "hoge".to_string(),
@@ -34,21 +34,25 @@ mod test {
             .into_connection();
 
         // Action
-        let result = get_all_channel(&Context::new()).unwrap();
+        let context = Context {
+            env: "harukun".to_string(),
+            db,
+        };
+        let result = get_all_channel(&context).unwrap();
 
         // Assert
         assert_eq!(
             result,
             vec![Channel {
                 id: "0".to_string(),
-                channel_name: "hoge".to_string(),
+                name: "hoge".to_string(),
+                owner: "0".to_string(),
                 description: Some("huga".to_string()),
-                is_private: false,
-                created_user_id: "0".to_string(),
                 created_at: "2024-08-08 00:00:00".to_string(),
-                updated_at: None,
-                archive_at: None,
-                deleted_at: None,
+                archived: false,
+                private: false,
+                animals: vec!["eraser".to_string(), "yuorei".to_string()],
+                messages: vec!["welcome".to_string(), "zoo".to_string()]
             }],
         )
     }
