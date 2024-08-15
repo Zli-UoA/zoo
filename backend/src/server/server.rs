@@ -42,7 +42,6 @@ async fn connect_db(url: &str) -> Result<DatabaseConnection, DbErr> {
     let mut connect_opt = ConnectOptions::new(url);
     connect_opt
         .max_connections(100)
-        .min_connections(5)
         .connect_timeout(Duration::from_secs(8))
         .acquire_timeout(Duration::from_secs(8))
         .idle_timeout(Duration::from_secs(8))
