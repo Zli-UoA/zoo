@@ -33,11 +33,12 @@ mod test {
             }]])
             .into_connection();
 
-        // Action
         let context = Context {
             env: "harukun".to_string(),
             db,
         };
+
+        // Action
         let result = get_all_channel(&context).unwrap();
 
         // Assert
