@@ -2,7 +2,7 @@ include .env
 export $(shell sed 's/=.*//' .env)
 
 migrate:
-	set -a && source .env && set +a && \
+	set -a && source ./.env && set +a && \
 	npx prisma migrate dev --skip-generate
 
 generate-entities:
