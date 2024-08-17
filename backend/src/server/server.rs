@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use async_graphql::http::GraphiQLSource;
 use async_graphql_axum::GraphQL;
 use axum::{
@@ -5,6 +7,7 @@ use axum::{
     routing::get,
     Router,
 };
+use sea_orm::{ConnectOptions, Database, DatabaseConnection, DbErr};
 use tokio::net::TcpListener;
 
 use super::schema::create_schema;
@@ -15,7 +18,17 @@ async fn graphiql() -> impl IntoResponse {
 }
 
 pub async fn run_server() -> Result<(), std::io::Error> {
-    let schema = create_schema().data(Context::new()).finish();
+    #[allow(clippy::option_env_unwrap)]
+    let database_url = option_env!("DATABASE_URL")
+        .expect("Cannot find enviroment variable 'DATABASE_URL' at compile time.");
+
+    let schema = create_schema()
+        .data(Context {
+            env: "harukun".to_string(),
+            db: connect_db(database_url).await.expect("Cannot connect DB"),
+        })
+        .finish();
+
     let app = Router::new().route("/", get(graphiql).post_service(GraphQL::new(schema)));
 
     axum::serve(TcpListener::bind("0.0.0.0:8000").await.unwrap(), app).await?;
@@ -23,4 +36,18 @@ pub async fn run_server() -> Result<(), std::io::Error> {
     println!("GraphiQL IDE: http://localhost:8000");
 
     Ok(())
+}
+
+async fn connect_db(url: &str) -> Result<DatabaseConnection, DbErr> {
+    let mut connect_opt = ConnectOptions::new(url);
+    connect_opt
+        .max_connections(100)
+        .connect_timeout(Duration::from_secs(8))
+        .acquire_timeout(Duration::from_secs(8))
+        .idle_timeout(Duration::from_secs(8))
+        .max_lifetime(Duration::from_secs(8))
+        .sqlx_logging(true)
+        .set_schema_search_path("my_schema");
+
+    Database::connect(connect_opt).await
 }
