@@ -65,20 +65,12 @@ pub mod test {
     }
 
     #[tokio::test]
-    async fn 指定IDのユーザが存在しない場合失敗() {
+    async fn 指定IDのユーザが存在しない場合None() {
         // Arrange
         let id = "4e36eb58-49a5-43aa-935f-5a5cccb77a90";
 
         let db: DatabaseConnection = MockDatabase::new(sea_orm::DatabaseBackend::Postgres)
-            .append_query_results([vec![user::Model {
-                id: id.to_string(),
-                user_name: "aiueo".to_string(),
-                display_name: "あいうえお".to_string(),
-                created_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S")
-                    .unwrap(),
-                updated_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S")
-                    .unwrap(),
-            }]])
+            .append_query_results(vec![Vec::<user::Model>::new()])
             .into_connection();
 
         let ctx = Context {
