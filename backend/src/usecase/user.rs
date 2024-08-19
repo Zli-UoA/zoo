@@ -1,7 +1,20 @@
+use sea_orm::EntityTrait;
+
+use crate::generate::entities::user;
 use crate::{context::Context, models::user::User};
 
-pub async fn get_user_by_id(_ctx: &Context, _id: &str) -> Result<User, ()> {
-    todo!();
+pub async fn get_user_by_id(ctx: &Context, id: &str) -> Result<Option<User>, ()> {
+    let db = &ctx.db;
+
+    let Ok(user) = user::Entity::find_by_id(id).one(db).await else {
+        return Err(());
+    };
+
+    Ok(user.map(|user| User {
+        id: user.id,
+        name: user.user_name,
+        display_name: user.display_name,
+    }))
 }
 
 #[cfg(test)]
@@ -43,11 +56,11 @@ pub mod test {
         // Assert
         assert_eq!(
             result,
-            Ok(User {
+            Ok(Some(User {
                 id: id.to_string(),
                 name: "aiueo".to_string(),
                 display_name: "あいうえお".to_string(),
-            })
+            }))
         );
     }
 
@@ -77,6 +90,6 @@ pub mod test {
         let result = get_user_by_id(&ctx, "存在しないID").await;
 
         // Assert
-        assert_eq!(result, Err(()));
+        assert_eq!(result, Ok(None));
     }
 }
