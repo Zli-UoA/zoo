@@ -2,7 +2,7 @@ use crate::context::Context;
 use crate::generate::entities::channel::Model;
 use crate::models::channel::Channel;
 
-pub fn get_all_channel(_ctx: &Context) -> Result<Vec<Channel>, ()> {
+pub async fn get_all_channel(_ctx: &Context) -> Result<Vec<Channel>, ()> {
     todo!("generate::entities::channel::Model to models::channel::Channel")
 }
 
@@ -15,8 +15,8 @@ mod test {
     use sea_orm::prelude::*;
     use sea_orm::MockDatabase;
 
-    #[test]
-    fn すべてのチャンネルを取得する() {
+    #[tokio::test]
+    async fn すべてのチャンネルを取得する() {
         // Arrange
         let db: DatabaseConnection = MockDatabase::new(sea_orm::DatabaseBackend::Postgres)
             .append_query_results([vec![channel::Model {
@@ -39,7 +39,7 @@ mod test {
         };
 
         // Action
-        let result = get_all_channel(&context).unwrap();
+        let result = get_all_channel(&context).await.unwrap();
 
         // Assert
         assert_eq!(
@@ -52,7 +52,7 @@ mod test {
                 created_at: "2024-08-08 00:00:00".to_string(),
                 archived: false,
                 private: false,
-                animals: vec!["eraser".to_string(), "yuorei".to_string()],
+                users: vec!["eraser".to_string(), "yuorei".to_string()],
                 messages: vec!["welcome".to_string(), "zoo".to_string()]
             }],
         )
