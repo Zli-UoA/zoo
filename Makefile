@@ -1,4 +1,4 @@
-.PHONY: migrate generate-entities
+.PHONY: migrate generate-entities db-up db-down db-restart db-reset
 
 migrate:
 	$(MAKE) -C backend migrate
@@ -7,24 +7,13 @@ generate-entities:
 	$(MAKE) -C backend generate-entities
 
 db-up:
-	docker run \
-		-d \
-		--rm \
-		--name zoo-postgres \
-		--env POSTGRES_USER=postgres \
-		--env POSTGRES_PASSWORD=postgres \
-		--env POSTGRES_DB=db \
-		-p 5432:5432 \
-		--mount type=volume,source=zoo-postgres-data,target=/var/lib/postgresql/data \
-		postgres:16
+	$(MAKE) -C infra db-up
 
 db-down:
-	docker stop zoo-postgres
+	$(MAKE) -C infra db-down
 
 db-restart:
-	docker restart zoo-postgres
+	$(MAKE) -C infra db-restart
 
 db-reset:
-	docker rm -f zoo-postgres
-	docker volume rm zoo-postgres-data
-
+	$(MAKE) -C infra db-reset

@@ -25,6 +25,7 @@
           name = "rust-env";
           nativeBuildInputs = with pkgs; [
             toolchain
+            gcc
             gnumake
             nodejs_22
             nodePackages.prisma
