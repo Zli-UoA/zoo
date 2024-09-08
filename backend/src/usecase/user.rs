@@ -40,8 +40,7 @@ pub mod test {
                 display_name: "あいうえお".to_string(),
                 created_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S")
                     .unwrap(),
-                updated_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S")
-                    .unwrap(),
+                updated_at: None,
             }]])
             .into_connection();
 
