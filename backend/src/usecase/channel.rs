@@ -7,24 +7,24 @@ pub async fn get_all_channel(_ctx: &Context) -> Result<Vec<Channel>, ()> {
 
 // User型を返すように要修正
 pub async fn get_channel_owner_by_channel_id(
-    ctx: &Context,
-    channel_id: &str,
+    _ctx: &Context,
+    _channel_id: &str,
 ) -> Result<String, ()> {
     todo!()
 }
 
 // User型を返すように要修正
 pub async fn get_channel_users_by_channel_id(
-    ctx: &Context,
-    channel_id: &str,
+    _ctx: &Context,
+    _channel_id: &str,
 ) -> Result<Option<Vec<String>>, ()> {
     todo!()
 }
 
 // Message型を返すように要修正
 pub async fn get_messages_by_channel_id(
-    ctx: &Context,
-    channel_id: &str,
+    _ctx: &Context,
+    _channel_id: &str,
 ) -> Result<Option<Vec<String>>, ()> {
     todo!()
 }
@@ -137,42 +137,38 @@ mod test {
         assert_eq!(result, "aaa".to_string())
     }
 
-    // append_query_resultsに３要素のタプルを渡すための拡張
+    // append_query_resultsにVectorを含むタプルを渡すための拡張
     use sea_orm::{
         EntityTrait, IdenStatic, IntoMockRow, Iterable, MockRow, ModelTrait, SelectA, SelectB,
     };
     use std::collections::BTreeMap;
 
-    struct IntoMockTripleCulumn<L, M, N>(L, M, N)
+    struct IntoMockVecCulumn<M, N>(M, Vec<N>)
     where
-        L: ModelTrait,
         M: ModelTrait,
         N: ModelTrait;
 
-    impl<L, M, N> IntoMockRow for IntoMockTripleCulumn<L, M, N>
+    impl<M, N> IntoMockRow for IntoMockVecCulumn<M, N>
     where
-        L: ModelTrait,
         M: ModelTrait,
         N: ModelTrait,
     {
         fn into_mock_row(self) -> MockRow {
             let mut mapped_join = BTreeMap::new();
 
-            for column in <<L as ModelTrait>::Entity as EntityTrait>::Column::iter() {
+            for column in <<M as ModelTrait>::Entity as EntityTrait>::Column::iter() {
                 mapped_join.insert(
                     format!("{}{}", SelectA.as_str(), column.as_str()),
                     self.0.get(column),
                 );
             }
-            for column in <<M as ModelTrait>::Entity as EntityTrait>::Column::iter() {
-                mapped_join.insert(
-                    format!("{}{}", SelectB.as_str(), column.as_str()),
-                    self.1.get(column),
-                );
-            }
-
             for column in <<N as ModelTrait>::Entity as EntityTrait>::Column::iter() {
-                mapped_join.insert(format!("{}", column.as_str()), self.2.get(column));
+                    for c in self.1.iter() {
+                        mapped_join.insert(
+                            format!("{}{}", SelectB.as_str(), column.as_str()),
+                            c.get(column)
+                        );
+                    }
             }
 
             mapped_join.into_mock_row()
@@ -183,7 +179,8 @@ mod test {
     async fn チャンネルに参加しているユーザーの一覧を取得する() {
         // Arrange
         let db: DatabaseConnection = MockDatabase::new(sea_orm::DatabaseBackend::Postgres)
-            .append_query_results([vec![IntoMockTripleCulumn(
+            // first query result
+            .append_query_results([vec![IntoMockVecCulumn(
                 channel::Model {
                     id: "0".to_string(),
                     channel_name: "hoge".to_string(),
@@ -193,34 +190,53 @@ mod test {
                     created_at: DateTime::parse_from_str(
                         "2024-08-08 00:00:00",
                         "%Y-%m-%d %H:%M:%S",
-                    )
-                    .unwrap(),
+                    ).unwrap(),
                     updated_at: None,
                     archive_at: None,
                     deleted_at: None,
                 },
+                vec![
                 channel_user::Model {
-                    joined_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S")
-                        .unwrap(),
+                    joined_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S").unwrap(),
                     user_id: "aaa".to_string(),
                     channel_id: "0".to_string(),
                 },
-                user::Model {
-                    id: "aaa".to_string(),
-                    user_name: "haru".to_string(),
-                    display_name: "haru".to_string(),
-                    created_at: DateTime::parse_from_str(
-                        "2024-08-08 00:00:00",
-                        "%Y-%m-%d %H:%M:%S",
-                    )
-                    .unwrap(),
-                    // Noneになる予定？
-                    updated_at: DateTime::parse_from_str(
-                        "2024-08-08 00:00:00",
-                        "%Y-%m-%d %H:%M:%S",
-                    )
-                    .unwrap(),
-                },
+                channel_user::Model {
+                    joined_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S").unwrap(),
+                    user_id: "bbb".to_string(),
+                    channel_id: "0".to_string(),
+                }
+                ])]])
+            // second query result
+            .append_query_results([vec![(
+                    user::Model {
+                        id: "aaa".to_string(),
+                        user_name: "haru".to_string(),
+                        display_name: "haru".to_string(),
+                        created_at: DateTime::parse_from_str(
+                            "2024-08-08 00:00:00",
+                            "%Y-%m-%d %H:%M:%S",
+                        ).unwrap(),
+                        // Noneになる予定？
+                        updated_at: DateTime::parse_from_str(
+                            "2024-08-08 00:00:00",
+                            "%Y-%m-%d %H:%M:%S",
+                        ).unwrap(),
+                    },
+                    user::Model {
+                        id: "bbb".to_string(),
+                        user_name: "eraser".to_string(),
+                        display_name: "eraser".to_string(),
+                        created_at: DateTime::parse_from_str(
+                            "2024-08-08 00:00:00",
+                            "%Y-%m-%d %H:%M:%S",
+                        ).unwrap(),
+                        // Noneになる予定？
+                        updated_at: DateTime::parse_from_str(
+                            "2024-08-08 00:00:00",
+                            "%Y-%m-%d %H:%M:%S",
+                        ).unwrap(),
+                    }
             )]])
             .into_connection();
 
@@ -235,14 +251,14 @@ mod test {
             .unwrap()
             .unwrap();
         // Assert
-        assert_eq!(result[0], "aaa".to_string())
+        assert_eq!(result[0], "aaa".to_string()) // message型を実装したらこのテストも修正する
     }
 
     #[tokio::test]
     async fn 全てのメッセージを取得する() {
         // Arrange
         let db: DatabaseConnection = MockDatabase::new(sea_orm::DatabaseBackend::Postgres)
-            .append_query_results([vec![(
+            .append_query_results([vec![IntoMockVecCulumn(
                 channel::Model {
                     id: "0".to_string(),
                     channel_name: "hoge".to_string(),
@@ -258,6 +274,7 @@ mod test {
                     archive_at: None,
                     deleted_at: None,
                 },
+                vec![
                 message::Model {
                     id: "aaa".to_string(),
                     user_id: "harukun".to_string(),
@@ -271,6 +288,20 @@ mod test {
                     updated_at: None,
                     deleted_at: None,
                 },
+                message::Model {
+                    id: "bbb".to_string(),
+                    user_id: "eraser".to_string(),
+                    channel_id: "0".to_string(),
+                    content: "test2".to_string(),
+                    created_at: DateTime::parse_from_str(
+                        "2024-08-08 00:00:00",
+                        "%Y-%m-%d %H:%M:%S",
+                    )
+                    .unwrap(),
+                    updated_at: None,
+                    deleted_at: None,
+                },
+                ]
             )]])
             .into_connection();
 
@@ -285,6 +316,6 @@ mod test {
             .unwrap()
             .unwrap();
         // Assert
-        assert_eq!(result[0], "aaa".to_string())
+        assert_eq!(result[0], "aaa".to_string()) // message型を実装したらこのテストも修正する
     }
 }
