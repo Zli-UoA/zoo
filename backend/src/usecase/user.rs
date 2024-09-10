@@ -4,6 +4,7 @@ use crate::generate::entities::user;
 use crate::{context::Context, models::user::User};
 
 pub async fn get_user_by_id(ctx: &Context, id: &str) -> Result<Option<User>, ()> {
+    // hoge
     let db = &ctx.db;
 
     let Ok(user) = user::Entity::find_by_id(id).one(db).await else {
