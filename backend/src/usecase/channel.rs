@@ -163,12 +163,12 @@ mod test {
                 );
             }
             for column in <<N as ModelTrait>::Entity as EntityTrait>::Column::iter() {
-                    for c in self.1.iter() {
-                        mapped_join.insert(
-                            format!("{}{}", SelectB.as_str(), column.as_str()),
-                            c.get(column)
-                        );
-                    }
+                for c in self.1.iter() {
+                    mapped_join.insert(
+                        format!("{}{}", SelectB.as_str(), column.as_str()),
+                        c.get(column),
+                    );
+                }
             }
 
             mapped_join.into_mock_row()
@@ -190,53 +190,67 @@ mod test {
                     created_at: DateTime::parse_from_str(
                         "2024-08-08 00:00:00",
                         "%Y-%m-%d %H:%M:%S",
-                    ).unwrap(),
+                    )
+                    .unwrap(),
                     updated_at: None,
                     archive_at: None,
                     deleted_at: None,
                 },
                 vec![
-                channel_user::Model {
-                    joined_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S").unwrap(),
-                    user_id: "aaa".to_string(),
-                    channel_id: "0".to_string(),
-                },
-                channel_user::Model {
-                    joined_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S").unwrap(),
-                    user_id: "bbb".to_string(),
-                    channel_id: "0".to_string(),
-                }
-                ])]])
+                    channel_user::Model {
+                        joined_at: DateTime::parse_from_str(
+                            "2024-08-08 00:00:00",
+                            "%Y-%m-%d %H:%M:%S",
+                        )
+                        .unwrap(),
+                        user_id: "aaa".to_string(),
+                        channel_id: "0".to_string(),
+                    },
+                    channel_user::Model {
+                        joined_at: DateTime::parse_from_str(
+                            "2024-08-08 00:00:00",
+                            "%Y-%m-%d %H:%M:%S",
+                        )
+                        .unwrap(),
+                        user_id: "bbb".to_string(),
+                        channel_id: "0".to_string(),
+                    },
+                ],
+            )]])
             // second query result
             .append_query_results([vec![(
-                    user::Model {
-                        id: "aaa".to_string(),
-                        user_name: "haru".to_string(),
-                        display_name: "haru".to_string(),
-                        created_at: DateTime::parse_from_str(
-                            "2024-08-08 00:00:00",
-                            "%Y-%m-%d %H:%M:%S",
-                        ).unwrap(),
-                        // Noneになる予定？
-                        updated_at: DateTime::parse_from_str(
-                            "2024-08-08 00:00:00",
-                            "%Y-%m-%d %H:%M:%S",
-                        ).unwrap(),
-                    },
-                    user::Model {
-                        id: "bbb".to_string(),
-                        user_name: "eraser".to_string(),
-                        display_name: "eraser".to_string(),
-                        created_at: DateTime::parse_from_str(
-                            "2024-08-08 00:00:00",
-                            "%Y-%m-%d %H:%M:%S",
-                        ).unwrap(),
-                        // Noneになる予定？
-                        updated_at: DateTime::parse_from_str(
-                            "2024-08-08 00:00:00",
-                            "%Y-%m-%d %H:%M:%S",
-                        ).unwrap(),
-                    }
+                user::Model {
+                    id: "aaa".to_string(),
+                    user_name: "haru".to_string(),
+                    display_name: "haru".to_string(),
+                    created_at: DateTime::parse_from_str(
+                        "2024-08-08 00:00:00",
+                        "%Y-%m-%d %H:%M:%S",
+                    )
+                    .unwrap(),
+                    // Noneになる予定？
+                    updated_at: DateTime::parse_from_str(
+                        "2024-08-08 00:00:00",
+                        "%Y-%m-%d %H:%M:%S",
+                    )
+                    .unwrap(),
+                },
+                user::Model {
+                    id: "bbb".to_string(),
+                    user_name: "eraser".to_string(),
+                    display_name: "eraser".to_string(),
+                    created_at: DateTime::parse_from_str(
+                        "2024-08-08 00:00:00",
+                        "%Y-%m-%d %H:%M:%S",
+                    )
+                    .unwrap(),
+                    // Noneになる予定？
+                    updated_at: DateTime::parse_from_str(
+                        "2024-08-08 00:00:00",
+                        "%Y-%m-%d %H:%M:%S",
+                    )
+                    .unwrap(),
+                },
             )]])
             .into_connection();
 
@@ -275,33 +289,33 @@ mod test {
                     deleted_at: None,
                 },
                 vec![
-                message::Model {
-                    id: "aaa".to_string(),
-                    user_id: "harukun".to_string(),
-                    channel_id: "0".to_string(),
-                    content: "test".to_string(),
-                    created_at: DateTime::parse_from_str(
-                        "2024-08-08 00:00:00",
-                        "%Y-%m-%d %H:%M:%S",
-                    )
-                    .unwrap(),
-                    updated_at: None,
-                    deleted_at: None,
-                },
-                message::Model {
-                    id: "bbb".to_string(),
-                    user_id: "eraser".to_string(),
-                    channel_id: "0".to_string(),
-                    content: "test2".to_string(),
-                    created_at: DateTime::parse_from_str(
-                        "2024-08-08 00:00:00",
-                        "%Y-%m-%d %H:%M:%S",
-                    )
-                    .unwrap(),
-                    updated_at: None,
-                    deleted_at: None,
-                },
-                ]
+                    message::Model {
+                        id: "aaa".to_string(),
+                        user_id: "harukun".to_string(),
+                        channel_id: "0".to_string(),
+                        content: "test".to_string(),
+                        created_at: DateTime::parse_from_str(
+                            "2024-08-08 00:00:00",
+                            "%Y-%m-%d %H:%M:%S",
+                        )
+                        .unwrap(),
+                        updated_at: None,
+                        deleted_at: None,
+                    },
+                    message::Model {
+                        id: "bbb".to_string(),
+                        user_id: "eraser".to_string(),
+                        channel_id: "0".to_string(),
+                        content: "test2".to_string(),
+                        created_at: DateTime::parse_from_str(
+                            "2024-08-08 00:00:00",
+                            "%Y-%m-%d %H:%M:%S",
+                        )
+                        .unwrap(),
+                        updated_at: None,
+                        deleted_at: None,
+                    },
+                ],
             )]])
             .into_connection();
 
