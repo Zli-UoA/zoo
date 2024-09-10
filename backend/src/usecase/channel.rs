@@ -132,11 +132,11 @@ mod test {
 
     #[tokio::test]
     async fn チャンネルに参加しているユーザーの一覧を取得する() {
-        // SeaORMのMockの仕様上, find_with_related()のシミュレートが出来ないためテストが不可能
+        // SeaORMのMockの仕様上find_with_related()のシミュレートが出来ないためテストが不可能
     }
 
     #[tokio::test]
     async fn 全てのメッセージを取得する() {
-        // SeaORMのMockの仕様上, find_with_related()のシミュレートが出来ないためテストが不可能
+        // SeaORMのMockの仕様上find_with_related()のシミュレートが出来ないためテストが不可能
     }
 }
