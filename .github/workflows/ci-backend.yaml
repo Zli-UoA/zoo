@@ -8,7 +8,7 @@ on:
 
 
 jobs:
-  setup:
+  build:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -25,14 +25,27 @@ jobs:
         with:
           workspaces: backend
 
-  build:
-    steps:
       - name: Build project
         run: |
           cargo build
 
   lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: backend
+
       - name: lint check
         run: |
           cargo clippy
@@ -42,7 +55,22 @@ jobs:
           cargo fmt --check
 
   test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: backend
+
       - name: test
         run: |
           cargo test
