@@ -3,12 +3,12 @@ name: CI
 on:
   push:
     paths:
-      - "backend/**"
+      - "./**"
   workflow_dispatch:
 
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -25,10 +25,14 @@ jobs:
         with:
           workspaces: backend
 
+  build:
+    steps:
       - name: Build project
         run: |
           cargo build
 
+  lint:
+    steps:
       - name: lint check
         run: |
           cargo clippy
@@ -37,6 +41,8 @@ jobs:
         run: |
           cargo fmt --check
 
+  test:
+    steps:
       - name: test
         run: |
           cargo test
