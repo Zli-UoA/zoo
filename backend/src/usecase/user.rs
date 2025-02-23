@@ -3,11 +3,9 @@ use sea_orm::EntityTrait;
 use crate::generate::entities::user;
 use crate::{context::Context, models::user::User};
 
-pub async fn get_user_by_id(ctx: &Context, id: &str) -> Result<Option<User>, ()> {
-    let db = &ctx.db;
-
-    let Ok(user) = user::Entity::find_by_id(id).one(db).await else {
-        return Err(());
+pub async fn get_user_by_id(ctx: &Context, id: &str) -> Result<Option<User>, String> {
+    let Ok(user) = user::Entity::find_by_id(id).one(&ctx.db).await else {
+        return Err("DB error".to_string());
     };
 
     Ok(user.map(|user| User {
@@ -66,8 +64,6 @@ pub mod test {
     #[tokio::test]
     async fn 指定IDのユーザが存在しない場合None() {
         // Arrange
-        let id = "4e36eb58-49a5-43aa-935f-5a5cccb77a90";
-
         let db: DatabaseConnection = MockDatabase::new(sea_orm::DatabaseBackend::Postgres)
             .append_query_results(vec![Vec::<user::Model>::new()])
             .into_connection();
