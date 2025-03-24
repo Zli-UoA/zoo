@@ -23,7 +23,7 @@ model User {
   user_name    String        @unique
   display_name String        @db.VarChar(255)
   created_at   DateTime      @default(now())
-  updated_at   DateTime      @updatedAt
+  updated_at   DateTime?     @updatedAt
   channel      Channel[]
   message      Message[]
   channel_user ChannelUser[]
