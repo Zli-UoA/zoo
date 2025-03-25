@@ -108,11 +108,11 @@ mod test {
                         "%Y-%m-%d %H:%M:%S",
                     )
                     .unwrap(),
-                    updated_at: DateTime::parse_from_str(
+                    updated_at: Some(DateTime::parse_from_str(
                         "2024-08-08 00:00:00",
                         "%Y-%m-%d %H:%M:%S",
                     )
-                    .unwrap(),
+                    .unwrap()),
                 },
             )]])
             .into_connection();
