@@ -29,7 +29,8 @@
             gnumake
             nodejs_22
             nodePackages.prisma
-            openssl
+            openssl.dev
+            pkg-config
             prisma-engines
           ];
           shellHook = with pkgs; ''
