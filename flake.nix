@@ -29,9 +29,12 @@
             gnumake
             nodejs_22
             nodePackages.prisma
-            openssl
+            openssl.dev
+            pkg-config
+            rust-analyzer
             prisma-engines
           ];
+          RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
           shellHook = with pkgs; ''
             export PRISMA_SCHEMA_ENGINE_BINARY="${prisma-engines}/bin/schema-engine"
             export PRISMA_QUERY_ENGINE_BINARY="${prisma-engines}/bin/query-engine"
