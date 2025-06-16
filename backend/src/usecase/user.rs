@@ -1,3 +1,4 @@
+use async_graphql::{Error, Result};
 use sea_orm::EntityTrait;
 
 use crate::generate::entities::user;
@@ -13,6 +14,18 @@ pub async fn get_user_by_id(ctx: &Context, id: &str) -> Result<Option<User>, Str
         name: user.user_name,
         display_name: user.display_name,
     }))
+}
+
+pub async fn get_all_users(ctx: &Context) -> Result<Vec<User>, String> {
+    let Ok(users) = user::Entity::find().all(&ctx.db).await else {
+        return Err("DB error".to_string());
+    };
+
+    Ok(users.into_iter().map(|user| User {
+        id: user.id,
+        name: user.user_name,
+        display_name: user.display_name,
+    }).collect())
 }
 
 #[cfg(test)]
@@ -78,5 +91,55 @@ pub mod test {
 
         // Assert
         assert_eq!(result, Ok(None));
+    }
+
+    #[tokio::test]
+    async fn 全ユーザーが取得される() {
+        // Arrange
+        let db: DatabaseConnection = MockDatabase::new(sea_orm::DatabaseBackend::Postgres)
+            .append_query_results([vec![
+                user::Model {
+                    id: "4e36eb58-49a5-43aa-935f-5a5cccb77a90".to_string(),
+                    user_name: "aiueo".to_string(),
+                    display_name: "あいうえお".to_string(),
+                    created_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S")
+                        .unwrap(),
+                    updated_at: None,
+                },
+                user::Model {
+                    id: "4e36eb58-49a5-43aa-935f-5a5cccb77a91".to_string(),
+                    user_name: "kakikukeko".to_string(),
+                    display_name: "かきくけこ".to_string(),
+                    created_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S")
+                        .unwrap(),
+                    updated_at: None,
+                },
+            ]])
+            .into_connection();
+
+        let ctx = Context {
+            env: "".to_string(),
+            db,
+        };
+
+        // Action
+        let result = super::get_all_users(&ctx).await;
+
+        // Assert
+        assert_eq!(
+            result,
+            Ok(vec![
+                User {
+                    id: "4e36eb58-49a5-43aa-935f-5a5cccb77a90".to_string(),
+                    name: "aiueo".to_string(),
+                    display_name: "あいうえお".to_string(),
+                },
+                User {
+                    id: "4e36eb58-49a5-43aa-935f-5a5cccb77a91".to_string(),
+                    name: "kakikukeko".to_string(),
+                    display_name: "かきくけこ".to_string(),
+                },
+            ])
+        );
     }
 }
