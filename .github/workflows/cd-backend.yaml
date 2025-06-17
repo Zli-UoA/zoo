@@ -3,8 +3,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "backend/**"
+      - ticket/#66
+    # paths:
+    #   - "backend/**"
 
 jobs:
   deploy:
