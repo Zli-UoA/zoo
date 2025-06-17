@@ -34,6 +34,8 @@ jobs:
           file: infra/Dockerfile-backend-deploy
           outputs: type=docker,dest=/tmp/${{ github.sha }}.tar
           tags: ${{ steps.docker-meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Install cloudflared
         run: |
