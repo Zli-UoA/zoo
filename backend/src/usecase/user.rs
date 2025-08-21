@@ -21,11 +21,14 @@ pub async fn get_all_users(ctx: &Context) -> Result<Vec<User>, String> {
         return Err("DB error".to_string());
     };
 
-    Ok(users.into_iter().map(|user| User {
-        id: user.id,
-        name: user.user_name,
-        display_name: user.display_name,
-    }).collect())
+    Ok(users
+        .into_iter()
+        .map(|user| User {
+            id: user.id,
+            name: user.user_name,
+            display_name: user.display_name,
+        })
+        .collect())
 }
 
 #[cfg(test)]
@@ -102,16 +105,22 @@ pub mod test {
                     id: "4e36eb58-49a5-43aa-935f-5a5cccb77a90".to_string(),
                     user_name: "aiueo".to_string(),
                     display_name: "あいうえお".to_string(),
-                    created_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S")
-                        .unwrap(),
+                    created_at: DateTime::parse_from_str(
+                        "2024-08-08 00:00:00",
+                        "%Y-%m-%d %H:%M:%S",
+                    )
+                    .unwrap(),
                     updated_at: None,
                 },
                 user::Model {
                     id: "4e36eb58-49a5-43aa-935f-5a5cccb77a91".to_string(),
                     user_name: "kakikukeko".to_string(),
                     display_name: "かきくけこ".to_string(),
-                    created_at: DateTime::parse_from_str("2024-08-08 00:00:00", "%Y-%m-%d %H:%M:%S")
-                        .unwrap(),
+                    created_at: DateTime::parse_from_str(
+                        "2024-08-08 00:00:00",
+                        "%Y-%m-%d %H:%M:%S",
+                    )
+                    .unwrap(),
                     updated_at: None,
                 },
             ]])
