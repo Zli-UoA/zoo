@@ -2,8 +2,8 @@ use async_graphql::{Error, Result};
 use sea_orm::{EntityTrait, ModelTrait};
 
 use crate::context::Context;
-use crate::generate::entities::user::{self, Entity as Owner};
 use crate::generate::entities::channel_user::Entity as Member;
+use crate::generate::entities::user::{self, Entity as Owner};
 use crate::models::{channel::Channel, user::User};
 
 use crate::generate::entities::channel;
@@ -61,17 +61,17 @@ pub async fn get_channel_users_by_channel_id(
         return Err("DB error".to_string());
     };
 
-
     let mut errors = Vec::new();
-    let futures = members.into_iter().map(async |member| {
-        get_user_by_channel_user(ctx, &member.user_id).await
-    });
+    let futures = members
+        .into_iter()
+        .map(async |member| get_user_by_channel_user(ctx, &member.user_id).await);
     let results = futures::future::join_all(futures).await;
-    let users: Vec<Option<User>> = results.into_iter()
+    let users: Vec<Option<User>> = results
+        .into_iter()
         .filter_map(|r| r.map_err(|e| errors.push(e)).ok())
         .collect::<Vec<_>>();
     if !errors.is_empty() {
-        return Err(format!("failed get user: {:?}", errors))
+        return Err(format!("failed get user: {:?}", errors));
     } else {
         Ok(users)
     }
