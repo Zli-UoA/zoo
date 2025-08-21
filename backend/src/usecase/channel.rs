@@ -35,7 +35,7 @@ pub async fn get_channel_owner_by_channel_id(
     };
 
     let Ok(owner) = channel.find_related(Owner).one(&ctx.db).await else {
-        return Err("DB error".to_string());
+        return Err("DB error. channel owner could not be found".to_string());
     };
 
     if let Some(owner) = owner {
@@ -52,13 +52,13 @@ pub async fn get_channel_owner_by_channel_id(
 pub async fn get_channel_users_by_channel_id(
     ctx: &Context,
     channel_id: &str,
-) -> Result<Vec<Option<User>>, String> {
+) -> Result<Vec<User>, String> {
     let Ok(Some(channel)) = channel::Entity::find_by_id(channel_id).one(&ctx.db).await else {
         return Err("DB error. channel could not be found".to_string());
     };
 
     let Ok(members) = channel.find_related(Member).all(&ctx.db).await else {
-        return Err("DB error".to_string());
+        return Err("DB error. channel members could not be found.".to_string());
     };
 
     let mut errors = Vec::new();
@@ -66,10 +66,11 @@ pub async fn get_channel_users_by_channel_id(
         .into_iter()
         .map(async |member| get_user_by_channel_user(ctx, &member.user_id).await);
     let results = futures::future::join_all(futures).await;
-    let users: Vec<Option<User>> = results
+    let users: Vec<User> = results
         .into_iter()
         .filter_map(|r| r.map_err(|e| errors.push(e)).ok())
-        .collect::<Vec<_>>();
+        .filter_map(|x| x)
+        .collect();
     if !errors.is_empty() {
         return Err(format!("failed get user: {:?}", errors));
     } else {
