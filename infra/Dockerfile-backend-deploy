@@ -1,6 +1,6 @@
 FROM rust:1 AS build-env
 
-ARG DATABASE_URL="postgresql://postgres:postgres@localhost:5432/db?schema=public"
+ARG DATABASE_URL="postgresql://postgres:postgres@db_server:5432/db?schema=public"
 
 WORKDIR /app
 
